@@ -16,7 +16,16 @@
       // alert('Hello, ' + me.username);
     // });
     
-    console.log(SC.get("/resolve/?url=https://soundcloud.com/awesomeone-3"));
+    // console.log(SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks"));
+    
+    SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) {
+        for (var i = 0; i < tracks.length; i++) {
+          console.log(tracks[i].title);
+        }
+    });
+    
+    // TODO: implement mergesort in JS to sort tracks by maxCout to minCount then display tracks on webpage
+    
   
   
     </script>
