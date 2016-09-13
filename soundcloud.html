@@ -2,10 +2,11 @@
 <html>
 <head>
     <script src="https://connect.soundcloud.com/sdk/sdk-3.1.2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
     <script>
     SC.initialize({
       client_id: 'e8f229ff62df70ca77ff05cf6f458d83',
-      redirect_uri: 'file:///C:/Users/Jonathan/Documents/callback.html' // USE THIS FOR LOCAL TESTING OF OAUTH
+      redirect_uri: 'file:///C:/Users/Jonathan/Documents/GitHub/soundcloud-organizer/callback.html' // USE THIS FOR LOCAL TESTING OF OAUTH
     });
 
     // initiate auth popup
@@ -14,6 +15,10 @@
     // }).then(function(me) {
       // alert('Hello, ' + me.username);
     // });
+    
+    console.log(SC.get("/resolve/?url=https://soundcloud.com/awesomeone-3"));
+  
+  
     </script>
 </head>
 
