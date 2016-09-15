@@ -9,6 +9,7 @@
       redirect_uri: 'file:///C:/Users/Jonathan/Documents/GitHub/soundcloud-organizer/callback.html' // USE THIS FOR LOCAL TESTING OF OAUTH
     });
 
+    // oauth probably not even necessary
     // initiate auth popup
     // SC.connect().then(function() {
       // return SC.get('/me');
@@ -18,13 +19,23 @@
     
     // console.log(SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks"));
     
-    SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) {
-        for (var i = 0; i < tracks.length; i++) {
-          console.log(tracks[i].title);
-        }
-    });
+    $(document).ready(function() {
+        SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) { // modify tracks array using .sort w/ specified compareTo or whatever JS uses
+            for (var i = 0; i < tracks.length; i++) {
+              // console.log(tracks[i].title);
+              console.log(tracks[i].permalink_url);
+              // $("table").append("<tr><td>" + i + "</td></tr>");
+              SC.oEmbed(tracks[i].permalink_url).then(function(widget) {
+                $("table").append("<tr><td>" + widget.html + "</td></tr>");
+              });
+            }
+        });
+    });   
     
-    // TODO: implement mergesort in JS to sort tracks by maxCout to minCount then display tracks on webpage
+    // playlists??
+    
+    // reorder XML to appear in diff. order?
+    // TODO: implement quicksort in JS to sort tracks by maxCout to minCount then display tracks on webpage
     
   
   
@@ -32,6 +43,6 @@
 </head>
 
 <body>
-
+    <table></table>
 </body> 
 </html>
