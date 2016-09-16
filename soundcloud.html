@@ -17,32 +17,49 @@
       // alert('Hello, ' + me.username);
     // });
     
-    // console.log(SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks"));
-    
-    // function compareTo(x, y) { // TODO: correctly sorts ascending
-        // return x.favoritings_count - y.favoritings_count;
-    // }
+    var favorites = $("<br><input id='favorites' type='button' value='Sort by most favorites'>");
+    var songCount = 0;
+    var artist;
     
     $(document).ready(function() {
-        SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) {
-            tracks.sort(function(x, y) {
-                return y.favoritings_count - x.favoritings_count;
-            });
-            for (var i = 0; i < tracks.length; i++) {
-              if (i < 5) {
-              console.log(tracks[i]);
-              SC.oEmbed(tracks[i].permalink_url, {maxheight: 200}).then(function(widget) { // keep maxheight low for faster loading
-                $("table").append("<tr><td>" + widget.html + "</td></tr>");
-              });
-              }
-            }
+        $("#find").click(function() {
+            artist = $("#artist").val();
+            $("form").append(favorites);
+            SC.get("/resolve/?url=https://soundcloud.com/" + artist + "/tracks").then(function(tracks) {
+                if (tracks.length < songCount) {
+                    songCount = tracks.length;
+                }
+                for (var i = songCount; i < songCount + 5; i++) { // TODO: make client-side loading sequential & interruptable by buttons
+                    SC.oEmbed(tracks[i].permalink_url, {maxheight: 200}).then(function(widget) {
+                        $("table").append("<tr><td>" + widget.html + "</td></tr>");
+                    });
+                }
+                songCount += 5; // TODO: add button at bottom to load more songs
+            }); // gets JSON track data; EDIT: due to nature of asynchronous
+            // you can't just put JSON data from SC.get into variable outside of callback function, so use callback function instead
         });
-    });   
+
+        favorites.click(function() { // try out .on later and replace favorites variable
+            $("table").children("tr").remove();
+            songCount = 0;
+            SC.get("/resolve/?url=https://soundcloud.com/" + artist + "/tracks").then(function(tracks) {
+                tracks.sort(function (x, y) {
+                    return y.favoritings_count - x.favoritings_count;
+                });
+                console.log(tracks);
+                if (tracks.length < songCount) {
+                    songCount = tracks.length;
+                }
+                for (var i = songCount; i < songCount + 5; i++) {
+                    SC.oEmbed(tracks[i].permalink_url, {maxheight: 200}).then(function(widget) { // TODO: make as a separate function and call it
+                        $("table").append("<tr><td>" + widget.html + "</td></tr>");
+                    });
+                }
+            });
+        });
+    });
     
-    // playlists??
-    
-    // reorder XML to appear in diff. order?
-    // TODO: implement quicksort in JS to sort tracks by maxCout to minCount then display tracks on webpage
+    // TODO: playlist compatability??
     
   
   
@@ -50,6 +67,11 @@
 </head>
 
 <body>
+    <form>
+        Find an artist:<br>
+        <input id="artist" type="text" name="artist" required>
+        <input id="find" type="button" value="Submit">
+    </form>
     <table></table>
 </body> 
 </html>
