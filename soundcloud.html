@@ -19,15 +19,22 @@
     
     // console.log(SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks"));
     
+    // function compareTo(x, y) { // TODO: correctly sorts ascending
+        // return x.favoritings_count - y.favoritings_count;
+    // }
+    
     $(document).ready(function() {
-        SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) { // modify tracks array using .sort w/ specified compareTo or whatever JS uses
-            for (var i = 0; i < tracks.length; i++) {
-              // console.log(tracks[i].title);
-              console.log(tracks[i].permalink_url);
-              // $("table").append("<tr><td>" + i + "</td></tr>");
-              SC.oEmbed(tracks[i].permalink_url).then(function(widget) {
+        SC.get("/resolve/?url=https://soundcloud.com/oshi/tracks").then(function(tracks) {
+            tracks.sort(function(x, y) {
+                return y.favoritings_count - x.favoritings_count;
+            });
+            for (var i = 0; i < sorted.length; i++) {
+              if (i < 5) {
+              console.log(tracks[i]);
+              SC.oEmbed(sorted[i].permalink_url, {maxheight: 200}).then(function(widget) { // keep maxheight low for faster loading
                 $("table").append("<tr><td>" + widget.html + "</td></tr>");
               });
+              }
             }
         });
     });   
