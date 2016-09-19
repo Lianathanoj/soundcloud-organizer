@@ -3,6 +3,7 @@
 <head>
     <script src="https://connect.soundcloud.com/sdk/sdk-3.1.2.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
+    <script type="text/javascript" src="jquery.lazy.min.js"></script>
     <script>
     SC.initialize({
       client_id: 'e8f229ff62df70ca77ff05cf6f458d83',
@@ -27,7 +28,8 @@
         SC.get("/resolve/?url=https://soundcloud.com/" + artist + "/tracks").then(function(tracks) {
             for (var i = songCount; i < songCount + 5; i++) { // TODO: make client-side loading sequential & interruptable by buttons
                 SC.oEmbed(tracks[i].permalink_url, {maxheight: 200}).then(function(widget) {
-                    $("table").append("<tr><td>" + widget.html + "</td></tr>");
+                    // $("table").append("<tr class='lazy'><td>" + widget.html + "</td></tr>");
+                    $("<tr class='lazy'><td>" + widget.html + "</td></tr>").appendTo("table");
                 });
             }
             songCount += 5; // TODO: add button at bottom to load more songs
@@ -45,6 +47,13 @@
             return y.playback_count - x.playback_count;
         }
     }
+
+    $(function() {
+        $('.lazy').lazy({
+            combined: false,
+            delay: 10000
+        });
+    });
 
     $(document).ready(function() {
         $("#dropdown").hide();
@@ -73,10 +82,16 @@
     });
     
     // TODO: playlist compatability??
-    
-  
-  
+
     </script>
+    <style>
+        tr.lazy {
+            display: block;
+            background-image: url("../soundcloud-organizer/soundcloud-icon.png");
+            background-size: 300px 200px;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
 
 <body>
